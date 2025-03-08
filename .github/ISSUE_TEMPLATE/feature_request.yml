@@ -49,3 +49,21 @@ body:
       placeholder: "Describe it here"
     validations:
       required: false
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+      description: Describe a specific use case for this feature.
+      placeholder: "Example: 'As a user, I want to upload large video files to share with my team without experiencing timeouts or delays.'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Describe the impact of this feature on your workflow or project.
+      placeholder: "Example: 'This feature will save me time and reduce the risk of errors when uploading large files, improving my overall productivity.'"
+    validations:
+      required: true
