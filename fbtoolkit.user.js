@@ -1,4 +1,4 @@
-const fastcsv = require('fast-csv');
+import { parse } from 'fast-csv';
 
 // ==UserScript==
 // @name        Facebook Toolkit
@@ -146,7 +146,7 @@ function expandTimeline() {
 /**
  * Scrape friends/followers of an user
  */
-function friendScraper() {
+async function friendScraper() {
     return new Promise((resolve, reject) => {
         try {
             const scrollContent = setInterval(() => {
@@ -191,38 +191,33 @@ function friendScraper() {
 /**
  * Extract friend/follower list of an user
  */
-function extractFriends() {
+async function extractFriends() {
     try {
         if (document.getElementById('medley_header_friends')) {
             toggleLoaderImg()
 
-            friendScraper()
-                .then(friends => {
-                    toggleLoaderImg()
-                    if (!friends.list.length) return alert('No visible friends to extract.')
+            const friends = await friendScraper();
+            toggleLoaderImg();
+            if (!friends.list.length) return alert('No visible friends to extract.');
 
-                    let csv = 'UserID,VanityName,UserName'
-                    friends.list.forEach(friend => csv += `<br>${friend.id},${friend.vanity},${friend.name}`)
-                    document.write(csv)
+            let csv = 'UserID,VanityName,UserName';
+            friends.list.forEach(friend => csv += `<br>${friend.id},${friend.vanity},${friend.name}`);
+            document.write(csv);
 
-                    console.log(`Extracted ${friends.list.length} friends.`)
-                })
-                .catch(error => {
-                    throw error
-                })
+            console.log(`Extracted ${friends.list.length} friends.`);
         } else {
-            throw 'Friendlist extraction failed. Cannot find selectors.'
+            throw 'Friendlist extraction failed. Cannot find selectors.';
         }
     } catch (exception) {
-        console.error(exception)
-        alert('Please open the friends section of this user.\nSee console log for details.')
+        console.error(exception);
+        alert('Please open the friends section of this user.\nSee console log for details.');
     }
 }
 
 /**
  * Scrape photos of an user
  */
-function photoScraper() {
+async function photoScraper() {
     return new Promise((resolve, reject) => {
         try {
             const scrollContent = setInterval(() => {
@@ -259,30 +254,25 @@ function photoScraper() {
 /**
  * Expand hidden content like comments etc.
  */
-function downloadPhotos() {
+async function downloadPhotos() {
     try {
         if (document.getElementById('pagelet_timeline_medley_photos')) {
             toggleLoaderImg()
 
-            photoScraper()
-                .then(photos => {
-                    toggleLoaderImg()
-                    if (!photos.length) return alert('No visible photos to download.')
+            const photos = await photoScraper();
+            toggleLoaderImg();
+            if (!photos.length) return alert('No visible photos to download.');
 
-                    let album = `<h1>Photos of ${getUsername()}</h1>`
-                    album += `<h3>Please save website to your computer (Ctrl+S) to download all photos.</h3>`
-                    photos.forEach(photo => album += `<img src="${photo}" style="max-width: 400px">`)
-                    document.write(album)
-                })
-                .catch(error => {
-                    throw error
-                })
+            let album = `<h1>Photos of ${getUsername()}</h1>`;
+            album += `<h3>Please save website to your computer (Ctrl+S) to download all photos.</h3>`;
+            photos.forEach(photo => album += `<img src="${photo}" style="max-width: 400px">`);
+            document.write(album);
         } else {
-            throw 'Photo extraction failed. Cannot find selectors.'
+            throw 'Photo extraction failed. Cannot find selectors.';
         }
     } catch (exception) {
-        console.error(exception)
-        alert('Please open the photos section of this user.\nSee console log for details.')
+        console.error(exception);
+        alert('Please open the photos section of this user.\nSee console log for details.');
     }
 }
 
@@ -337,7 +327,7 @@ function clearTimeline() {
 /**
  * Insert toolkit menu item and flyout into Facebook bluebar
  */
-function init() {
+async function init() {
     return new Promise((resolve, reject) => {
         try {
             const menuItem = document.querySelector('div[role="navigation"] > div')
@@ -380,27 +370,23 @@ function init() {
 /**
  * Run Facebook toolkit and add click listeners after initialization
  */
-window.onload = () => {
+window.onload = async () => {
     try {
         if (document.getElementById('pagelet_timeline_main_column')) {
-            init()
-                .then(() => {
-                    // Close flyout menu on menu item click
-                    const flyout = document.querySelector('a[data-target="fbToolkitFlyout"]')
-                    const menuItems = document.querySelectorAll('a[id^="fbToolkit"]')
-                    menuItems.forEach(item => item.addEventListener('click', () => flyout.click()))
+            await init();
+            // Close flyout menu on menu item click
+            const flyout = document.querySelector('a[data-target="fbToolkitFlyout"]')
+            const menuItems = document.querySelectorAll('a[id^="fbToolkit"]')
+            menuItems.forEach(item => item.addEventListener('click', () => flyout.click()))
 
-                    // Add click event listener to every menu item
-                    document.querySelector('a#fbToolkitUserId').addEventListener('click', () => alert(getUserId()))
-                    document.querySelector('a#fbToolkitIdCover').addEventListener('click', () => showUserId())
-                    document.querySelector('a#fbToolkitScroll').addEventListener('click', () => scrollTimeline())
-                    document.querySelector('a#fbToolkitExpand').addEventListener('click', () => expandTimeline())
-                    document.querySelector('a#fbToolkitFriends').addEventListener('click', () => extractFriends())
-                    document.querySelector('a#fbToolkitPhotos').addEventListener('click', () => downloadPhotos())
-                    document.querySelector('a#fbToolkitClear').addEventListener('click', () => clearTimeline())
-                }).catch(exception => {
-                    throw exception
-                })
+            // Add click event listener to every menu item
+            document.querySelector('a#fbToolkitUserId').addEventListener('click', () => alert(getUserId()))
+            document.querySelector('a#fbToolkitIdCover').addEventListener('click', () => showUserId())
+            document.querySelector('a#fbToolkitScroll').addEventListener('click', () => scrollTimeline())
+            document.querySelector('a#fbToolkitExpand').addEventListener('click', () => expandTimeline())
+            document.querySelector('a#fbToolkitFriends').addEventListener('click', () => extractFriends())
+            document.querySelector('a#fbToolkitPhotos').addEventListener('click', () => downloadPhotos())
+            document.querySelector('a#fbToolkitClear').addEventListener('click', () => clearTimeline())
         }
     } catch (exception) {
         console.error(exception)
