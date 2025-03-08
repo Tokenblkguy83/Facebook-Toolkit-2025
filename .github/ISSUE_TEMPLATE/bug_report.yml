@@ -121,3 +121,21 @@ body:
       placeholder: "Describe it here"
     validations:
       required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Describe the environment in which the bug occurred (e.g., development, staging, production).
+      placeholder: "Example: 'Staging environment with version 1.2.3'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: If you have found a workaround for the issue, describe it.
+      placeholder: "Example: 'To avoid the issue, I am currently using an older version of the file upload library.'"
+    validations:
+      required: false

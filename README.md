@@ -17,6 +17,25 @@ To install the `fast-csv` library, run the following command:
 npm install fast-csv
 ```
 
+### Example Usage
+
+Here is an example of how to use the `extractFriends` function:
+
+```javascript
+extractFriends()
+  .then(friends => {
+    console.log(`Extracted ${friends.list.length} friends.`);
+    let csv = 'UserID,VanityName,UserName\n';
+    friends.list.forEach(friend => {
+      csv += `${friend.id},${friend.vanity},${friend.name}\n`;
+    });
+    console.log(csv);
+  })
+  .catch(error => {
+    console.error('Error extracting friends:', error);
+  });
+```
+
 ## Troubleshooting
 
 If Facebook Toolkit isn't present in the bluebar or doesn't respond, please reload the page manually by pressing Shift+F5. This will reload the whole page from the server and not from your browser's cache.
@@ -53,3 +72,18 @@ Self-explaining.
 
 ### Force page reload
 Reload the current page from the server (not from the cache).
+
+## Frequently Asked Questions (FAQs)
+
+### How do I install the Facebook Toolkit?
+Follow the instructions in the [Usage](#usage) section to install the Facebook Toolkit.
+
+### What should I do if the Facebook Toolkit isn't working?
+Refer to the [Troubleshooting](#troubleshooting) section for steps to resolve common issues.
+
+### How can I contribute to the project?
+See the [Contributing](#contributing) section below for guidelines on how to contribute.
+
+## Contributing
+
+We welcome contributions to the Facebook Toolkit project! To get started, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to report issues, submit pull requests, and follow our coding standards.
