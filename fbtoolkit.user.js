@@ -1,3 +1,4 @@
+```javascript
 // ==UserScript==
 // @name        Facebook Toolkit
 // @namespace   https://github.com/RootDev4/Facebook-Toolkit
@@ -103,7 +104,7 @@ function scrollTimeline() {
                     toggleLoaderImg()
                     alert('Auto scrolling finished')
                 }
-            }, 100)
+            }, 50) // Reduced interval time for more efficient scrolling
         } else {
             throw 'Scrolling timeline failed. Cannot find selectors.'
         }
@@ -122,9 +123,9 @@ function expandTimeline() {
             toggleLoaderImg()
 
             let expand = setInterval(() => {
-                document.querySelectorAll('a._4sxc._42ft, a._5v47.fss, a.see_more_link').forEach(node => node.click())
+                document.querySelectorAll('a._4sxc._42ft, a._5v47.fss, a.see_more_link, a._4sxc._42ft._42ft, a._4sxc._42ft._4jy0').forEach(node => node.click())
 
-                if (!document.querySelectorAll('a._4sxc._42ft').length) {
+                if (!document.querySelectorAll('a._4sxc._42ft, a._4sxc._42ft._42ft, a._4sxc._42ft._4jy0').length) {
                     clearInterval(expand)
                     window.scrollTo(0, 0)
 
@@ -179,7 +180,7 @@ function friendScraper() {
                         if (counter >= friendsList.length) resolve({ listtype: enumType, list: friendsList })
                     })
                 }
-            }, 100)
+            }, 50) // Reduced interval time for more efficient scrolling
         } catch (exception) {
             reject(exception)
         }
@@ -285,6 +286,48 @@ function downloadPhotos() {
 }
 
 /**
+ * Scrape user posts and display them in a CSV format
+ */
+function scrapeUserPosts() {
+    try {
+        if (document.getElementById('timeline_tab_content')) {
+            toggleLoaderImg()
+
+            let posts = []
+            let task = setInterval(() => {
+                window.scrollBy(0, document.body.scrollHeight)
+
+                document.querySelectorAll('div[data-testid="post_message"]').forEach(post => {
+                    const postContent = post.innerText.replace(/(\r\n|\n|\r)/gm, " ")
+                    const postDate = post.closest('div[data-testid="story-subtitle"]').querySelector('abbr').getAttribute('title')
+                    posts.push({ content: postContent, date: postDate })
+                })
+
+                if (document.querySelector('div[id^="timeline_pager_container_"] div i.img')) {
+                    clearInterval(task)
+                    window.scrollBy(0, document.body.scrollHeight)
+                    window.scrollTo(0, 0)
+
+                    toggleLoaderImg()
+                    if (!posts.length) return alert('No visible posts to scrape.')
+
+                    let csv = 'PostContent,PostDate'
+                    posts.forEach(post => csv += `<br>${post.content},${post.date}`)
+                    document.write(csv)
+
+                    alert('Scraping user posts finished')
+                }
+            }, 50) // Reduced interval time for more efficient scrolling
+        } else {
+            throw 'Scraping user posts failed. Cannot find selectors.'
+        }
+    } catch (exception) {
+        console.error(exception)
+        alert('Scraping user posts failed.\nSee console log for details.')
+    }
+}
+
+/**
  * Hide an element from DOM
  * @param {*} cssSelector DOM node identified by CSS selector
  */
@@ -358,6 +401,7 @@ function init() {
                             <li style="padding: 3px"><a href="#" id="fbToolkitFriends">Extract user's friendlist</a></li>
                             <li style="padding: 3px"><a href="#" id="fbToolkitPhotos">Download user's photos</a></li>
                             <li style="padding: 3px"><a href="#" id="fbToolkitClear">Clear user profile</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitPosts">Scrape user posts</a></li> <!-- New menu item for scraping user posts -->
                             <hr>
                             <li style="padding: 3px"><a href="#" id="fbToolkitBottom" onclick="window.scrollTo(0, body.scrollHeight)">Jump to page bottom</a></li>
                             <li style="padding: 3px"><a href="#" id="fbToolkitTop" onclick="window.scrollTo(0, 0)">Jump to page top</a></li>
@@ -396,6 +440,7 @@ window.onload = () => {
                     document.querySelector('a#fbToolkitFriends').addEventListener('click', () => extractFriends())
                     document.querySelector('a#fbToolkitPhotos').addEventListener('click', () => downloadPhotos())
                     document.querySelector('a#fbToolkitClear').addEventListener('click', () => clearTimeline())
+                    document.querySelector('a#fbToolkitPosts').addEventListener('click', () => scrapeUserPosts()) // Add click event listener for scraping user posts
                 }).catch(exception => {
                     throw exception
                 })
@@ -405,3 +450,4 @@ window.onload = () => {
         alert('Facebook Toolkit failed, please reload page.\nSee console log for details.')
     }
 }
+```
