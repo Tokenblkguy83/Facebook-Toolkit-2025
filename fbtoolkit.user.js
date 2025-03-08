@@ -78,7 +78,7 @@ function getUsername() {
 function getVanityName(userUrl) {
     try {
         const name = /facebook.com\/(.*?)\?/g.exec(userUrl)[1] || null
-        if (name !== null && !name.contains('profile.php')) return name
+        if (name !== null && !name.includes('profile.php')) {
     } catch (exception) {
         console.error(exception)
     }
@@ -199,11 +199,14 @@ async function extractFriends() {
             const friends = await friendScraper();
             toggleLoaderImg();
             if (!friends.list.length) {
-
-            let csv = 'UserID,VanityName,UserName';
-            friends.list.forEach(friend => csv += `\n${friend.id},${friend.vanity},${friend.name}`);
-            document.write(csv);
-
+                let csv = 'UserID,VanityName,UserName';
+                friends.list.forEach(friend => csv += `\n${friend.id},${friend.vanity},${friend.name}`);
+                document.write(csv);
+            } else {
+                let csv = 'UserID,VanityName,UserName';
+                friends.list.forEach(friend => csv += `\n${friend.id},${friend.vanity},${friend.name}`);
+                document.write(csv);
+            }
             console.log(`Extracted ${friends.list.length} friends.`);
         } else {
             throw 'Friendlist extraction failed. Cannot find selectors.';
