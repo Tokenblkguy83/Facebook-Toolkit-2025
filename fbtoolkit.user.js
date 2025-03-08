@@ -198,7 +198,7 @@ async function extractFriends() {
 
             const friends = await friendScraper();
             toggleLoaderImg();
-            if (!friends.list.length) return alert('No visible friends to extract.');
+            if (!friends.list.length) {
 
             let csv = 'UserID,VanityName,UserName';
             friends.list.forEach(friend => csv += `\n${friend.id},${friend.vanity},${friend.name}`);
