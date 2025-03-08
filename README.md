@@ -38,6 +38,15 @@ Extract all visible friends or followers and print out as CSV formatted string. 
 ### Download user's photos
 Download all uploaded photos. After scraping user's photos, please save page manually to your computer (Ctrl+S) to download all photos. After you had downloaded the page, reload the page manually to get back to Facebook.
 
+### Scrape user posts
+Scrape user posts and display them in a CSV format.
+
+### Scrape user comments
+Scrape user comments on posts and display them in a CSV format.
+
+### Scrape user likes/reactions
+Scrape user likes and reactions on posts and display them in a CSV format.
+
 ### Jump to page bottom / Jump to page top
 Self-explaining.
 

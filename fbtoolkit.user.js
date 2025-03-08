@@ -328,6 +328,90 @@ function scrapeUserPosts() {
 }
 
 /**
+ * Scrape user comments on posts and display them in a CSV format
+ */
+function scrapeUserComments() {
+    try {
+        if (document.getElementById('timeline_tab_content')) {
+            toggleLoaderImg()
+
+            let comments = []
+            let task = setInterval(() => {
+                window.scrollBy(0, document.body.scrollHeight)
+
+                document.querySelectorAll('div[data-testid="UFI2Comment/body"]').forEach(comment => {
+                    const commentContent = comment.innerText.replace(/(\r\n|\n|\r)/gm, " ")
+                    const commentDate = comment.closest('div[data-testid="UFI2Comment/root_depth_0"]').querySelector('abbr').getAttribute('title')
+                    comments.push({ content: commentContent, date: commentDate })
+                })
+
+                if (document.querySelector('div[id^="timeline_pager_container_"] div i.img')) {
+                    clearInterval(task)
+                    window.scrollBy(0, document.body.scrollHeight)
+                    window.scrollTo(0, 0)
+
+                    toggleLoaderImg()
+                    if (!comments.length) return alert('No visible comments to scrape.')
+
+                    let csv = 'CommentContent,CommentDate'
+                    comments.forEach(comment => csv += `<br>${comment.content},${comment.date}`)
+                    document.write(csv)
+
+                    alert('Scraping user comments finished')
+                }
+            }, 50) // Reduced interval time for more efficient scrolling
+        } else {
+            throw 'Scraping user comments failed. Cannot find selectors.'
+        }
+    } catch (exception) {
+        console.error(exception)
+        alert('Scraping user comments failed.\nSee console log for details.')
+    }
+}
+
+/**
+ * Scrape user likes and reactions on posts and display them in a CSV format
+ */
+function scrapeUserLikesReactions() {
+    try {
+        if (document.getElementById('timeline_tab_content')) {
+            toggleLoaderImg()
+
+            let likesReactions = []
+            let task = setInterval(() => {
+                window.scrollBy(0, document.body.scrollHeight)
+
+                document.querySelectorAll('div[data-testid="UFI2ReactionsCount/root"]').forEach(reaction => {
+                    const reactionContent = reaction.innerText.replace(/(\r\n|\n|\r)/gm, " ")
+                    const reactionDate = reaction.closest('div[data-testid="story-subtitle"]').querySelector('abbr').getAttribute('title')
+                    likesReactions.push({ content: reactionContent, date: reactionDate })
+                })
+
+                if (document.querySelector('div[id^="timeline_pager_container_"] div i.img')) {
+                    clearInterval(task)
+                    window.scrollBy(0, document.body.scrollHeight)
+                    window.scrollTo(0, 0)
+
+                    toggleLoaderImg()
+                    if (!likesReactions.length) return alert('No visible likes/reactions to scrape.')
+
+                    let csv = 'ReactionContent,ReactionDate'
+                    likesReactions.forEach(reaction => csv += `<br>${reaction.content},${reaction.date}`)
+                    document.write(csv)
+
+                    alert('Scraping user likes/reactions finished')
+                }
+            }, 50) // Reduced interval time for more efficient scrolling
+        } else {
+            throw 'Scraping user likes/reactions failed. Cannot find selectors.'
+        }
+    } catch (exception) {
+        console.error(exception)
+        alert('Scraping user likes/reactions failed.\nSee console log for details.')
+    }
+}
+
+/**
  * Hide an element from DOM
  * @param {*} cssSelector DOM node identified by CSS selector
  */
@@ -394,21 +478,24 @@ function init() {
                     <div class="__tw toggleTargetClosed _3nzk" role="dialog" id="fbToolkitFlyout" style="margin: 5px 10px 0 0; width: 160px">
                         <div class="beeperNub"></div>
                         <ul style="padding: 10px">
-                            <li style="padding: 3px"><a href="#" id="fbToolkitUserId">Get numeric user ID</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitIdCover">Show user ID on cover</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitScroll">Scroll user timeline</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitExpand">Expand hidden content</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitFriends">Extract user's friendlist</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitPhotos">Download user's photos</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitClear">Clear user profile</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitPosts">Scrape user posts</a></li> <!-- New menu item for scraping user posts -->
+                            <li style="padding: 3px"><a href="#" id="fbToolkitUserId"><img src="icon_user_id.png" alt="User ID Icon"> Get numeric user ID</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitIdCover"><img src="icon_id_cover.png" alt="ID Cover Icon"> Show user ID on cover</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitScroll"><img src="icon_scroll.png" alt="Scroll Icon"> Scroll user timeline</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitExpand"><img src="icon_expand.png" alt="Expand Icon"> Expand hidden content</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitFriends"><img src="icon_friends.png" alt="Friends Icon"> Extract user's friendlist</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitPhotos"><img src="icon_photos.png" alt="Photos Icon"> Download user's photos</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitClear"><img src="icon_clear.png" alt="Clear Icon"> Clear user profile</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitPosts"><img src="icon_posts.png" alt="Posts Icon"> Scrape user posts</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitComments"><img src="icon_comments.png" alt="Comments Icon"> Scrape user comments</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitLikesReactions"><img src="icon_likes_reactions.png" alt="Likes/Reactions Icon"> Scrape user likes/reactions</a></li>
                             <hr>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitBottom" onclick="window.scrollTo(0, body.scrollHeight)">Jump to page bottom</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitTop" onclick="window.scrollTo(0, 0)">Jump to page top</a></li>
-                            <li style="padding: 3px"><a href="#" id="fbToolkitReload" onclick="location.reload(true)">Force page reload</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitBottom" onclick="window.scrollTo(0, body.scrollHeight)"><img src="icon_bottom.png" alt="Bottom Icon"> Jump to page bottom</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitTop" onclick="window.scrollTo(0, 0)"><img src="icon_top.png" alt="Top Icon"> Jump to page top</a></li>
+                            <li style="padding: 3px"><a href="#" id="fbToolkitReload" onclick="location.reload(true)"><img src="icon_reload.png" alt="Reload Icon"> Force page reload</a></li>
                             <hr>
-                            <li style="padding: 3px"><a href="https://github.com/RootDev4/Facebook-Toolkit" id="fbToolkitHelp" target="_blank">About & Help</a></li>
+                            <li style="padding: 3px"><a href="https://github.com/RootDev4/Facebook-Toolkit" id="fbToolkitHelp" target="_blank"><img src="icon_help.png" alt="Help Icon"> About & Help</a></li>
                         </ul>
+                        <input type="text" id="fbToolkitSearch" placeholder="Search features..." style="width: 100%; padding: 5px; margin-top: 10px;">
                     </div>
                 </div>`
 
@@ -441,6 +528,21 @@ window.onload = () => {
                     document.querySelector('a#fbToolkitPhotos').addEventListener('click', () => downloadPhotos())
                     document.querySelector('a#fbToolkitClear').addEventListener('click', () => clearTimeline())
                     document.querySelector('a#fbToolkitPosts').addEventListener('click', () => scrapeUserPosts()) // Add click event listener for scraping user posts
+                    document.querySelector('a#fbToolkitComments').addEventListener('click', () => scrapeUserComments()) // Add click event listener for scraping user comments
+                    document.querySelector('a#fbToolkitLikesReactions').addEventListener('click', () => scrapeUserLikesReactions()) // Add click event listener for scraping user likes/reactions
+
+                    // Add search functionality to the search bar
+                    document.querySelector('input#fbToolkitSearch').addEventListener('input', (event) => {
+                        const searchTerm = event.target.value.toLowerCase()
+                        menuItems.forEach(item => {
+                            const text = item.innerText.toLowerCase()
+                            if (text.includes(searchTerm)) {
+                                item.parentElement.style.display = 'block'
+                            } else {
+                                item.parentElement.style.display = 'none'
+                            }
+                        })
+                    })
                 }).catch(exception => {
                     throw exception
                 })
