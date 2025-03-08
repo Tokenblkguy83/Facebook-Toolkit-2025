@@ -201,7 +201,7 @@ async function extractFriends() {
             if (!friends.list.length) return alert('No visible friends to extract.');
 
             let csv = 'UserID,VanityName,UserName';
-            friends.list.forEach(friend => csv += `<br>${friend.id},${friend.vanity},${friend.name}`);
+            friends.list.forEach(friend => csv += `\n${friend.id},${friend.vanity},${friend.name}`);
             document.write(csv);
 
             console.log(`Extracted ${friends.list.length} friends.`);
