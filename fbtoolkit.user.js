@@ -94,7 +94,7 @@ function scrollTimeline() {
         if (document.getElementById('timeline_tab_content')) {
             toggleLoaderImg()
 
-            let task = setInterval(() => {
+            const task = setInterval(() => {
                 window.scrollBy(0, document.body.scrollHeight)
 
                 if (document.querySelector('div[id^="timeline_pager_container_"] div i.img')) {
@@ -149,7 +149,7 @@ function expandTimeline() {
 function friendScraper() {
     return new Promise((resolve, reject) => {
         try {
-            let scrollContent = setInterval(() => {
+            const scrollContent = setInterval(() => {
                 window.scrollBy(0, document.body.scrollHeight)
 
                 const followers = document.querySelector('div#pagelet_collections_followers') ? true : false
@@ -225,7 +225,7 @@ function extractFriends() {
 function photoScraper() {
     return new Promise((resolve, reject) => {
         try {
-            let scrollContent = setInterval(() => {
+            const scrollContent = setInterval(() => {
                 window.scrollBy(0, document.body.scrollHeight)
 
                 if (document.querySelectorAll('div[id^="pagelet_timeline_medley"]:not(#pagelet_timeline_medley_photos').length) {
@@ -237,7 +237,7 @@ function photoScraper() {
                     const collection = document.querySelector('div#pagelet_timeline_medley_photos')
                     const photos = collection.querySelectorAll('li.fbPhotoStarGridElement')
                     let counter = 0
-                    let album = []
+                    const album = []
 
                     if (!photos.length) resolve(album)
 
