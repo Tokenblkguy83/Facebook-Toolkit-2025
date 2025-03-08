@@ -1,3 +1,5 @@
+const fastcsv = require('fast-csv');
+
 // ==UserScript==
 // @name        Facebook Toolkit
 // @namespace   https://github.com/RootDev4/Facebook-Toolkit
