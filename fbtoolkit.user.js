@@ -78,7 +78,7 @@ function getUsername() {
 function getVanityName(userUrl) {
     try {
         const name = /facebook.com\/(.*?)\?/g.exec(userUrl)[1] || null
-        if (name !== null && !name.includes('profile.php')) return name
+        if (name !== null && !name.includes('profile.php')) {
     } catch (exception) {
         console.error(exception)
     }
