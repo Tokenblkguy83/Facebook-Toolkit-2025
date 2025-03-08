@@ -7,6 +7,16 @@ JavaScript Userscript for Facebook automation.
 
 I recommend to use Google Chrome browser for this UserScript. Install browser addon Greasemonkey or Tampermonkey. After installation, open [fbtoolkit.user.js script file](https://github.com/RootDev4/Facebook-Toolkit/blob/master/fbtoolkit.user.js) and click the **Raw** button. The user script gets installed automatically by Greasemonkey/Tampermonkey addon. Facebook Toolkit is now accessible from the bluebar. Visit any Facebook user profile to test.
 
+### CSV Generation
+
+The `extractFriends` function now uses the `fast-csv` library for generating CSV files. This library provides a more robust and flexible way to handle CSV data.
+
+To install the `fast-csv` library, run the following command:
+
+```bash
+npm install fast-csv
+```
+
 ## Troubleshooting
 
 If Facebook Toolkit isn't present in the bluebar or doesn't respond, please reload the page manually by pressing Shift+F5. This will reload the whole page from the server and not from your browser's cache.
