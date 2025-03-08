@@ -261,7 +261,7 @@ async function downloadPhotos() {
 
             const photos = await photoScraper();
             toggleLoaderImg();
-            if (!photos.length) return alert('No visible photos to download.');
+            if (!photos.length) {
 
             let album = `<h1>Photos of ${getUsername()}</h1>`;
             album += `<h3>Please save website to your computer (Ctrl+S) to download all photos.</h3>`;
