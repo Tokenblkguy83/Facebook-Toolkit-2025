@@ -57,6 +57,7 @@ function showUserId() {
         const userIdNode = document.createElement('span');
         userIdNode.innerHTML = `<span style="color:#fff; font-size:120%;">Facebook ID: ${userId}</span>`;
         coverName.parentNode.parentNode.append(userIdNode);
+        alert(`User ID: ${userId} retrieved successfully.`);
     } catch (exception) {
         console.error('Show user ID failed:', exception);
         alert('Showing Facebook user ID failed.\nSee console log for details.');
@@ -87,4 +88,25 @@ function getVanityName(userUrl) {
     }
 }
 
-function scrollTimeline() {
+function scrollTimeline(retries = CONFIG.MAX_RETRIES) {
+    try {
+        let lastHeight = document.body.scrollHeight;
+        window.scrollTo(0, document.body.scrollHeight);
+        setTimeout(() => {
+            const newHeight = document.body.scrollHeight;
+            if (newHeight !== lastHeight) {
+                scrollTimeline();
+            } else {
+                console.log('Reached the end of the timeline.');
+            }
+        }, CONFIG.SCROLL_DELAY);
+    } catch (exception) {
+        console.error('Scroll timeline failed:', exception);
+        if (retries > 0) {
+            console.log(`Retrying... (${retries} attempts left)`);
+            scrollTimeline(retries - 1);
+        } else {
+            alert('Scrolling timeline failed.\nSee console log for details.');
+        }
+    }
+}

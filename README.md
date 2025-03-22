@@ -24,6 +24,14 @@ extractFriends()
   });
 ```
 
+### Show User ID
+
+The `showUserId` function retrieves and displays the numeric Facebook user ID inside the timeline cover right below the username. It also provides feedback to the user when the user ID is successfully retrieved.
+
+### Scroll User Timeline
+
+The `scrollTimeline` function scrolls the user's timeline to the very beginning automatically. It includes retry logic and error logging to handle any issues that may occur during the scrolling process.
+
 ## Troubleshooting
 
 If Facebook Toolkit isn't present in the bluebar or doesn't respond, please reload the page manually by pressing Shift+F5. This will reload the whole page from the server and not from your browser's cache.

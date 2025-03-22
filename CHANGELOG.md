@@ -22,3 +22,8 @@ All notable changes to this project will be documented in this file.
 - Added a new test file, `tests/fbtoolkit.test.js`, to write the unit tests for the functions in `fbtoolkit.user.js`.
 - Used a testing framework like Deno's built-in testing library to write and run the tests.
 - Ensured the tests cover various scenarios and edge cases for each function.
+
+### Changed
+- Enhanced `showUserId` function to display a message when the user ID is successfully retrieved.
+- Optimized UI updates in `scrollTimeline` function by batching multiple updates together.
+- Implemented retry logic and error logging in `scrollTimeline` function.
