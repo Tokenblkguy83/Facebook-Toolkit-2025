@@ -67,3 +67,12 @@ body:
       placeholder: "Example: 'This feature will save me time and reduce the risk of errors when uploading large files, improving my overall productivity.'"
     validations:
       required: true
+
+  - type: textarea
+    id: priority
+    attributes:
+      label: Priority
+      description: Indicate the priority level of this feature request (e.g., low, medium, high).
+      placeholder: "Example: 'High'"
+    validations:
+      required: true

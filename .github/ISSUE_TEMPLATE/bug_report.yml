@@ -139,3 +139,21 @@ body:
       placeholder: "Example: 'To avoid the issue, I am currently using an older version of the file upload library.'"
     validations:
       required: false
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Describe the impact of this bug on your workflow or project.
+      placeholder: "Example: 'This bug is causing significant delays in my project and affecting my productivity.'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: priority
+    attributes:
+      label: Priority
+      description: Indicate the priority level of this bug (e.g., low, medium, high).
+      placeholder: "Example: 'High'"
+    validations:
+      required: true
