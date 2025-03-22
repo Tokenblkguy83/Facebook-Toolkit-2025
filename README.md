@@ -7,16 +7,6 @@ JavaScript Userscript for Facebook automation.
 
 I recommend to use Google Chrome browser for this UserScript. Install browser addon Greasemonkey or Tampermonkey. After installation, open [fbtoolkit.user.js script file](https://github.com/RootDev4/Facebook-Toolkit/blob/master/fbtoolkit.user.js) and click the **Raw** button. The user script gets installed automatically by Greasemonkey/Tampermonkey addon. Facebook Toolkit is now accessible from the bluebar. Visit any Facebook user profile to test.
 
-### CSV Generation
-
-The `extractFriends` function now uses the `fast-csv` library for generating CSV files. This library provides a more robust and flexible way to handle CSV data.
-
-To install the `fast-csv` library, run the following command:
-
-```bash
-npm install fast-csv
-```
-
 ### Example Usage
 
 Here is an example of how to use the `extractFriends` function:
@@ -25,11 +15,9 @@ Here is an example of how to use the `extractFriends` function:
 extractFriends()
   .then(friends => {
     console.log(`Extracted ${friends.list.length} friends.`);
-    let csv = 'UserID,VanityName,UserName\n';
     friends.list.forEach(friend => {
-      csv += `${friend.id},${friend.vanity},${friend.name}\n`;
+      console.log(`Name: ${friend.name}, Link: ${friend.link}`);
     });
-    console.log(csv);
   })
   .catch(error => {
     console.error('Error extracting friends:', error);
