@@ -76,3 +76,12 @@ body:
       placeholder: "Example: 'High'"
     validations:
       required: true
+
+  - type: textarea
+    id: related_issues
+    attributes:
+      label: Related Issues
+      description: List any related issues or pull requests.
+      placeholder: "Example: '#123, #456'"
+    validations:
+      required: false

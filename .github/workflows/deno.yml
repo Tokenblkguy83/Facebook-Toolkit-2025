@@ -43,6 +43,27 @@ jobs:
       - name: Run tests
         run: deno test -A
 
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install papyrus-python
+
+      - name: Run conversion script
+        run: python convert_to_papyrus.py
+
+      - name: Commit converted code
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'Convert code to Papyrus Python 3'
+          git push
+
   deploy:
     runs-on: ubuntu-latest
 

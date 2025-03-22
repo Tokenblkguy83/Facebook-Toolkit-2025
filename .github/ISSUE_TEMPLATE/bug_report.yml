@@ -157,3 +157,30 @@ body:
       placeholder: "Example: 'High'"
     validations:
       required: true
+
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      description: How often does the bug occur (e.g., always, sometimes, rarely)?
+      placeholder: "Example: 'Always'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: severity
+    attributes:
+      label: Severity
+      description: Indicate the severity level of this bug (e.g., minor, major, critical).
+      placeholder: "Example: 'Major'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: related_issues
+    attributes:
+      label: Related Issues
+      description: List any related issues or pull requests.
+      placeholder: "Example: '#123, #456'"
+    validations:
+      required: false
