@@ -31,9 +31,13 @@ Deno.test("expandTimeline does not throw an error", () => {
   }, Error);
 });
 
-Deno.test("extractFriends returns a valid friends list", async () => {
+Deno.test("extractFriends returns a valid friends list with names and links", async () => {
   const friends = await extractFriends();
   assertEquals(Array.isArray(friends.list), true);
+  friends.list.forEach(friend => {
+    assertEquals(typeof friend.name, "string");
+    assertEquals(typeof friend.link, "string");
+  });
 });
 
 Deno.test("downloadPhotos returns a valid photos list", async () => {
