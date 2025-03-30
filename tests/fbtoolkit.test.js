@@ -1,5 +1,6 @@
 import { assertEquals, assertThrows } from "https://deno.land/std@0.97.0/testing/asserts.ts";
-import { getUserId, getUsername, getVanityName, scrollTimeline, expandTimeline, extractFriends, downloadPhotos, clearTimeline } from "../fbtoolkit.user.js";
+import { getUserId, getUsername, getVanityName } from "../utils/jsonUtils.js";
+import { scrollTimeline, expandTimeline, extractFriends, downloadPhotos, clearTimeline } from "../utils/htmlUtils.js";
 
 Deno.test("getUserId returns a valid user ID", () => {
   const userId = getUserId();
