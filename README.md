@@ -43,3 +43,35 @@ Self-explaining.
 
 ### Force page reload
 Reload the current page from the server (not from the cache).
+
+## New Features
+
+### Download Videos
+Added the ability to download videos from Facebook profiles.
+
+### Scrape Additional User Data
+Added the ability to scrape additional user data such as email addresses and phone numbers.
+
+### Improved User Interface
+Enhanced the user interface with more styling and a visually appealing design.
+
+### Localization Support
+Added localization support to make the toolkit accessible to users who speak different languages.
+
+## Running the Linter and Tests
+
+### Running the Linter
+To check for code style issues, run the following command:
+```bash
+npm run lint
+```
+
+### Running the Tests
+To run the tests and ensure the functionality of the code, use the following command:
+```bash
+npm test
+```
+
+## Contributing
+
+We welcome contributions to the Facebook Toolkit project! If you would like to contribute, please follow the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
