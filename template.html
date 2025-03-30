@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to HTML Converter</title>
+    <style>
+        .json-to-html {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .json-item {
+            margin-bottom: 10px;
+        }
+        .interactive-elements {
+            margin-top: 20px;
+        }
+        .pictures-gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .picture-item {
+            margin: 10px;
+        }
+        .picture-item img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="output"></div>
+    <script>
+        function filterData() {
+            // Implement filtering logic here
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            event.target.appendChild(document.getElementById(data));
+        }
+    </script>
+</body>
+</html>

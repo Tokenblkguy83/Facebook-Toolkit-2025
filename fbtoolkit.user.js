@@ -15,7 +15,8 @@ const fastcsv = require('fast-csv');
 const CONFIG = {
     SCROLL_DELAY: 200,
     MAX_RETRIES: 3,
-    EXPORT_FORMATS: ['csv', 'json']
+    EXPORT_FORMATS: ['csv', 'json'],
+    JSON_TO_HTML: true
 };
 
 const fbLoaderImg = 'https://static.xx.fbcdn.net/rsrc.php/v3/yb/r/GsNJNwuI-UM.gif';
@@ -88,3 +89,89 @@ function getVanityName(userUrl) {
 }
 
 function scrollTimeline() {
+    // Implementation of scrollTimeline function
+}
+
+function expandTimeline() {
+    // Implementation of expandTimeline function
+}
+
+function extractFriends() {
+    // Implementation of extractFriends function
+}
+
+function downloadPhotos() {
+    // Implementation of downloadPhotos function
+}
+
+function clearTimeline() {
+    // Implementation of clearTimeline function
+}
+
+function convertJsonToHtml(jsonData) {
+    try {
+        if (!jsonData || typeof jsonData !== 'object') throw new Error('Invalid JSON data');
+        
+        let htmlContent = '<div class="json-to-html">';
+        
+        // Convert JSON data to HTML
+        for (const key in jsonData) {
+            if (jsonData.hasOwnProperty(key)) {
+                htmlContent += `<div class="json-item"><strong>${key}:</strong> ${jsonData[key]}</div>`;
+            }
+        }
+        
+        htmlContent += '</div>';
+        
+        // Add interactive elements
+        htmlContent += `
+            <div class="interactive-elements">
+                <button onclick="filterData()">Filter Data</button>
+                <div id="chartContainer"></div>
+            </div>
+        `;
+        
+        // Add drag-and-drop functionality
+        htmlContent += `
+            <script>
+                function allowDrop(event) {
+                    event.preventDefault();
+                }
+                
+                function drag(event) {
+                    event.dataTransfer.setData("text", event.target.id);
+                }
+                
+                function drop(event) {
+                    event.preventDefault();
+                    const data = event.dataTransfer.getData("text");
+                    event.target.appendChild(document.getElementById(data));
+                }
+            </script>
+        `;
+        
+        return htmlContent;
+    } catch (exception) {
+        console.error('Convert JSON to HTML failed:', exception);
+        return null;
+    }
+}
+
+function displayPictures(pictures) {
+    try {
+        if (!Array.isArray(pictures)) throw new Error('Invalid pictures data');
+        
+        let htmlContent = '<div class="pictures-gallery">';
+        
+        pictures.forEach(picture => {
+            htmlContent += `<div class="picture-item"><img src="${picture.url}" alt="${picture.alt}"></div>`;
+        });
+        
+        htmlContent += '</div>';
+        
+        return htmlContent;
+    } catch (exception) {
+        console.error('Display pictures failed:', exception);
+        return null;
+    }
+}
