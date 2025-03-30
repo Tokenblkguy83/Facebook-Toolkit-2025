@@ -1,0 +1,15 @@
+{
+  "name": "facebook-toolkit",
+  "version": "0.3.0",
+  "description": "JavaScript Userscript for Facebook automation",
+  "main": "fbtoolkit.user.js",
+  "scripts": {
+    "lint": "eslint fbtoolkit.user.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RootDev4 (Chris)",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.32.0"
+  }
+}
