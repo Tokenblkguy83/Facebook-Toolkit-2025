@@ -1,3 +1,4 @@
+```javascript
 // ==UserScript==
 // @name        Facebook Toolkit
 // @namespace   https://github.com/RootDev4/Facebook-Toolkit
@@ -11,6 +12,12 @@
 
 // Facebook loading image
 const fbLoaderImg = 'https://static.xx.fbcdn.net/rsrc.php/v3/yb/r/GsNJNwuI-UM.gif'
+
+// Cache frequently accessed elements
+let profileTimeline = null;
+let profileName = null;
+let profileFriends = null;
+let profilePhotos = null;
 
 /**
  * Show/hide Facebook image loader next to toolkit menu item
@@ -33,7 +40,7 @@ function toggleLoaderImg() {
  */
 function getUserId() {
     try {
-        const pagelet = document.getElementById('pagelet_timeline_main_column')
+        const pagelet = profileTimeline || document.querySelector('[data-pagelet="ProfileTimeline"]')
         return JSON.parse(pagelet.getAttribute('data-gt')).profile_owner
     } catch (exception) {
         console.error(exception)
@@ -49,7 +56,7 @@ function showUserId() {
     try {
         const userIdNode = document.createElement('span')
         userIdNode.innerHTML = `<span style="color:#fff; font-size:120%;">Facebook ID: ${getUserId()}</span>`
-        document.getElementById('fb-timeline-cover-name').parentNode.parentNode.append(userIdNode)
+        profileName.parentNode.parentNode.append(userIdNode)
     } catch (exception) {
         console.error(exception)
         alert('Showing Facebook user ID on timeline cover failed.\nSee console log for details.')
@@ -61,7 +68,7 @@ function showUserId() {
  */
 function getUsername() {
     try {
-        return document.querySelector('span#fb-timeline-cover-name a').innerText
+        return profileName.querySelector('a').innerText
     } catch (exception) {
         console.error(exception)
     }
@@ -89,21 +96,25 @@ function getVanityName(userUrl) {
  */
 function scrollTimeline() {
     try {
-        if (document.getElementById('timeline_tab_content')) {
+        if (profileTimeline) {
             toggleLoaderImg()
 
-            let task = setInterval(() => {
+            let task;
+            function scroll() {
                 window.scrollBy(0, document.body.scrollHeight)
 
                 if (document.querySelector('div[id^="timeline_pager_container_"] div i.img')) {
-                    clearInterval(task)
+                    cancelAnimationFrame(task)
                     window.scrollBy(0, document.body.scrollHeight)
                     window.scrollTo(0, 0)
 
                     toggleLoaderImg()
                     alert('Auto scrolling finished')
+                } else {
+                    task = requestAnimationFrame(scroll)
                 }
-            }, 100)
+            }
+            task = requestAnimationFrame(scroll)
         } else {
             throw 'Scrolling timeline failed. Cannot find selectors.'
         }
@@ -118,20 +129,24 @@ function scrollTimeline() {
  */
 function expandTimeline() {
     try {
-        if (document.getElementById('timeline_tab_content')) {
+        if (profileTimeline) {
             toggleLoaderImg()
 
-            let expand = setInterval(() => {
-                document.querySelectorAll('a._4sxc._42ft, a._5v47.fss, a.see_more_link').forEach(node => node.click())
+            let expand;
+            function expandContent() {
+                document.querySelectorAll('a[data-testid="expanding_cta"], a[data-testid="expanding_cta"], a[data-testid="expanding_cta"]').forEach(node => node.click())
 
-                if (!document.querySelectorAll('a._4sxc._42ft').length) {
-                    clearInterval(expand)
+                if (!document.querySelectorAll('a[data-testid="expanding_cta"]').length) {
+                    cancelAnimationFrame(expand)
                     window.scrollTo(0, 0)
 
                     toggleLoaderImg()
                     alert('All content expanded')
+                } else {
+                    expand = requestAnimationFrame(expandContent)
                 }
-            }, 100)
+            }
+            expand = requestAnimationFrame(expandContent)
         } else {
             throw 'Expanding hidden content on user\'s timeline failed. Cannot find selectors.'
         }
@@ -147,19 +162,20 @@ function expandTimeline() {
 function friendScraper() {
     return new Promise((resolve, reject) => {
         try {
-            let scrollContent = setInterval(() => {
+            let scrollContent;
+            function scroll() {
                 window.scrollBy(0, document.body.scrollHeight)
 
-                const followers = document.querySelector('div#pagelet_collections_followers') ? true : false
-                const moreMedleys = document.querySelectorAll('div[id^="pagelet_timeline_medley"]:not(#pagelet_timeline_medley_friends)')
+                const followers = document.querySelector('[data-pagelet="ProfileFollowers"]') ? true : false
+                const moreMedleys = document.querySelectorAll('[data-pagelet^="ProfileTimeline"]:not([data-pagelet="ProfileTimelineFriends"])')
 
                 if ((!followers && moreMedleys.length) || (followers && document.querySelector('div.morePager') === null)) {
-                    clearInterval(scrollContent)
+                    cancelAnimationFrame(scrollContent)
                     window.scrollBy(0, document.body.scrollHeight)
                     window.scrollTo(0, 0)
 
                     // Fetch friends/followers
-                    const collection = (followers) ? document.querySelector('div#pagelet_collections_followers') : document.querySelector('div#pagelet_timeline_medley_friends')
+                    const collection = (followers) ? document.querySelector('[data-pagelet="ProfileFollowers"]') : profileFriends
                     const friends = (followers) ? collection.querySelectorAll('li.fbProfileBrowserListItem > div') : collection.querySelectorAll('div[data-testid="friend_list_item"]')
                     let counter = 0
                     let friendsList = []
@@ -178,8 +194,11 @@ function friendScraper() {
 
                         if (counter >= friendsList.length) resolve({ listtype: enumType, list: friendsList })
                     })
+                } else {
+                    scrollContent = requestAnimationFrame(scroll)
                 }
-            }, 100)
+            }
+            scrollContent = requestAnimationFrame(scroll)
         } catch (exception) {
             reject(exception)
         }
@@ -191,7 +210,7 @@ function friendScraper() {
  */
 function extractFriends() {
     try {
-        if (document.getElementById('medley_header_friends')) {
+        if (profileFriends) {
             toggleLoaderImg()
 
             friendScraper()
@@ -223,16 +242,17 @@ function extractFriends() {
 function photoScraper() {
     return new Promise((resolve, reject) => {
         try {
-            let scrollContent = setInterval(() => {
+            let scrollContent;
+            function scroll() {
                 window.scrollBy(0, document.body.scrollHeight)
 
-                if (document.querySelectorAll('div[id^="pagelet_timeline_medley"]:not(#pagelet_timeline_medley_photos').length) {
-                    clearInterval(scrollContent)
+                if (document.querySelectorAll('[data-pagelet^="ProfileTimeline"]:not([data-pagelet="ProfileTimelinePhotos"])').length) {
+                    cancelAnimationFrame(scrollContent)
                     window.scrollBy(0, document.body.scrollHeight)
                     window.scrollTo(0, 0)
 
                     // Fetch URL of all photos
-                    const collection = document.querySelector('div#pagelet_timeline_medley_photos')
+                    const collection = profilePhotos
                     const photos = collection.querySelectorAll('li.fbPhotoStarGridElement')
                     let counter = 0
                     let album = []
@@ -245,8 +265,11 @@ function photoScraper() {
 
                         if (counter >= photos.length) resolve(album)
                     })
+                } else {
+                    scrollContent = requestAnimationFrame(scroll)
                 }
-            }, 100)
+            }
+            scrollContent = requestAnimationFrame(scroll)
         } catch (exception) {
             reject(exception)
         }
@@ -259,7 +282,7 @@ function photoScraper() {
  */
 function downloadPhotos() {
     try {
-        if (document.getElementById('pagelet_timeline_medley_photos')) {
+        if (profilePhotos) {
             toggleLoaderImg()
 
             photoScraper()
@@ -369,6 +392,12 @@ function init() {
                 </div>`
 
             resolve(menuItem.appendChild(newItem))
+
+            // Cache frequently accessed elements
+            profileTimeline = document.querySelector('[data-pagelet="ProfileTimeline"]');
+            profileName = document.querySelector('[data-testid="profile_name_in_profile_page"]');
+            profileFriends = document.querySelector('[data-pagelet="ProfileTimelineFriends"]');
+            profilePhotos = document.querySelector('[data-pagelet="ProfileTimelinePhotos"]');
         } catch (exception) {
             reject(exception)
         }
@@ -380,7 +409,7 @@ function init() {
  */
 window.onload = () => {
     try {
-        if (document.getElementById('pagelet_timeline_main_column')) {
+        if (document.querySelector('[data-pagelet="ProfileTimeline"]')) {
             init()
                 .then(() => {
                     // Close flyout menu on menu item click
@@ -405,3 +434,34 @@ window.onload = () => {
         alert('Facebook Toolkit failed, please reload page.\nSee console log for details.')
     }
 }
+
+// MutationObserver to watch for changes in the DOM and dynamically update the selectors
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length || mutation.removedNodes.length) {
+            // Reinitialize the toolkit when changes are detected
+            init()
+                .then(() => {
+                    // Close flyout menu on menu item click
+                    const flyout = document.querySelector('a[data-target="fbToolkitFlyout"]')
+                    const menuItems = document.querySelectorAll('a[id^="fbToolkit"]')
+                    menuItems.forEach(item => item.addEventListener('click', () => flyout.click()))
+
+                    // Add click event listener to every menu item
+                    document.querySelector('a#fbToolkitUserId').addEventListener('click', () => alert(getUserId()))
+                    document.querySelector('a#fbToolkitIdCover').addEventListener('click', () => showUserId())
+                    document.querySelector('a#fbToolkitScroll').addEventListener('click', () => scrollTimeline())
+                    document.querySelector('a#fbToolkitExpand').addEventListener('click', () => expandTimeline())
+                    document.querySelector('a#fbToolkitFriends').addEventListener('click', () => extractFriends())
+                    document.querySelector('a#fbToolkitPhotos').addEventListener('click', () => downloadPhotos())
+                    document.querySelector('a#fbToolkitClear').addEventListener('click', () => clearTimeline())
+                }).catch(exception => {
+                    throw exception
+                })
+        }
+    })
+})
+
+// Start observing the document for changes
+observer.observe(document, { childList: true, subtree: true })
+```
